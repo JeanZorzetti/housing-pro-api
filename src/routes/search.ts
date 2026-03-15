@@ -49,8 +49,9 @@ search.post('/sync', async (c) => {
 
     return c.json({ success: true, slug })
   } catch (err) {
-    console.error('[search/sync] error:', err)
-    return c.json({ error: 'Erro ao indexar post.' }, 500)
+    const msg = err instanceof Error ? err.message : String(err)
+    console.error('[search/sync] error:', msg)
+    return c.json({ error: msg }, 500)
   }
 })
 

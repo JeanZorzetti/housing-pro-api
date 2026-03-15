@@ -4,7 +4,7 @@ const OLLAMA_MODEL = 'nomic-embed-text'
 
 // Generate embedding vector via Ollama (runs on VPS — no external API key needed)
 export async function generateEmbedding(text: string): Promise<number[]> {
-  const url = process.env.OLLAMA_URL ?? 'http://localhost:11434'
+  const url = (process.env.OLLAMA_URL ?? 'http://localhost:11434').replace(/\/$/, '')
 
   const res = await fetch(`${url}/api/embeddings`, {
     method: 'POST',
