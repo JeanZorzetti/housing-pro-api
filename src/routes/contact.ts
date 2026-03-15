@@ -51,6 +51,29 @@ contact.post('/', contactRatelimit, async (c) => {
       ])
     }
 
+    // Forward lead to Prolife CRM (fire and forget — does not block response)
+    if (process.env.PROLIFE_API_URL && process.env.PROLIFE_LEADS_SECRET) {
+      fetch(`${process.env.PROLIFE_API_URL}/api/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nome: record.name,
+          email: record.email,
+          telefone: record.phone ?? undefined,
+          tipo: 'empresa',
+          assunto: 'empresa',
+          mensagem: [
+            record.company ? `Empresa: ${record.company}` : null,
+            record.interest ? `Interesse: ${record.interest}` : null,
+            record.message ? `Mensagem: ${record.message}` : null,
+            `Origem: Housing PRO (${record.source})`,
+          ].filter(Boolean).join('\n'),
+          origem: 'housing_pro',
+          apiKey: process.env.PROLIFE_LEADS_SECRET,
+        }),
+      }).catch((err) => console.error('[contact] prolife forward error:', err))
+    }
+
     return c.json({ success: true, id: record.id }, 201)
   } catch (err) {
     console.error('[contact] error:', err)
