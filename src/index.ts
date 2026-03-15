@@ -4,6 +4,7 @@ import { cors } from 'hono/cors'
 import { logger } from 'hono/logger'
 import health from './routes/health.js'
 import contact from './routes/contact.js'
+import search from './routes/search.js'
 
 const app = new Hono()
 
@@ -21,6 +22,7 @@ app.use(
 // Routes
 app.route('/health', health)
 app.route('/contact', contact)
+app.route('/search', search)
 
 // 404
 app.notFound((c) => c.json({ error: 'Not found' }, 404))
