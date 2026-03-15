@@ -9,7 +9,7 @@ export async function generateEmbedding(text: string): Promise<number[]> {
   const res = await fetch(`${url}/api/embeddings`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: OLLAMA_MODEL, prompt: text.slice(0, 8000) }),
+    body: JSON.stringify({ model: OLLAMA_MODEL, prompt: text.slice(0, 1500) }),
   })
 
   if (!res.ok) {
