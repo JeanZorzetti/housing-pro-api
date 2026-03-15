@@ -71,7 +71,16 @@ contact.post('/', contactRatelimit, async (c) => {
           origem: 'housing_pro',
           apiKey: process.env.PROLIFE_LEADS_SECRET,
         }),
-      }).catch((err) => console.error('[contact] prolife forward error:', err))
+      })
+        .then(async (res) => {
+          const body = await res.text()
+          if (res.ok) {
+            console.log(`[contact] prolife forward ok — ${res.status}`)
+          } else {
+            console.error(`[contact] prolife forward failed — ${res.status}: ${body}`)
+          }
+        })
+        .catch((err) => console.error('[contact] prolife forward error:', err.message))
     }
 
     return c.json({ success: true, id: record.id }, 201)
