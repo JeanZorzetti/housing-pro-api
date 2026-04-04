@@ -54,7 +54,6 @@ contact.post('/', contactRatelimit, async (c) => {
     // Forward lead to Prolife CRM (fire and forget — does not block response)
     if (process.env.PROLIFE_API_URL && process.env.PROLIFE_LEADS_SECRET) {
       const prolifeUrl = `${process.env.PROLIFE_API_URL.replace(/\/+$/, '')}/api/contact`
-      console.log(`[contact] prolife forward → ${prolifeUrl}`)
       fetch(prolifeUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -75,11 +74,8 @@ contact.post('/', contactRatelimit, async (c) => {
         }),
       })
         .then(async (res) => {
-          const body = await res.text()
-          console.log(`[contact] prolife response — status: ${res.status}, redirected: ${res.redirected}, url: ${res.url}`)
-          if (res.ok) {
-            console.log(`[contact] prolife forward ok — ${res.status}`)
-          } else {
+          if (!res.ok) {
+            const body = await res.text()
             console.error(`[contact] prolife forward failed — ${res.status}: ${body.slice(0, 200)}`)
           }
         })
